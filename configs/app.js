@@ -9,6 +9,7 @@ import express from 'express' //Servidor HTTP
 import morgan from 'morgan' //Logs
 import helmet from 'helmet' //Seguridad para HTTP
 import cors from 'cors' //Acceso al API
+import userRouter from '../src/user/user.routes.js'
 import { limiter } from '../middlewares/rate.limit.js'
 
 //Configuraciones de express
@@ -22,7 +23,7 @@ const configs = (app)=>{
 }
 
 const routes = (app)=>{
-  
+    app.use('/v1/user', userRouter)
 }
 
 //Ejecutarmos el servidor
