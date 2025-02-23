@@ -11,6 +11,8 @@ import helmet from 'helmet' //Seguridad para HTTP
 import cors from 'cors' //Acceso al API
 import userRouter from '../src/user/user.routes.js'
 import categoryRouter from '../src/category/category.routes.js'
+import publicationRouter from '../src/publication/publication.routes.js'
+import commentRouter from '../src/comment/comment.routes.js'
 import { limiter } from '../middlewares/rate.limit.js'
 
 //Configuraciones de express
@@ -26,6 +28,8 @@ const configs = (app)=>{
 const routes = (app)=>{
     app.use('/v1/user', userRouter)
     app.use('/v1/category', categoryRouter)
+    app.use('/v1/publication', publicationRouter)
+    app.use('/v1/comment',commentRouter)
 
 }
 
