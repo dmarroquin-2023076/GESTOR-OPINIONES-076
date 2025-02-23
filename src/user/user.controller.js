@@ -169,7 +169,7 @@ const addDefaultUser = async () => {
         )
  
             await adminUser.save()
-            console.log(" Default admin user added ")
+            console.log("Default admin user added ")
         }
     } catch (e) {
         console.error("Error adding default user:", e)
