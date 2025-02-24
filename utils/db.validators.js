@@ -1,7 +1,8 @@
 //Validar datos relacionados a la BD
-
-import { isValidObjectId } from 'mongoose'
+import { isValidObjectId } from 'mongoose';
 import User from '../src/user/user.model.js'
+import Category from '../src/category/category.model.js'
+
                                 //parámetro | token
 export const existUsername = async(username, user)=>{
     const alreadyUsername = await User.findOne({username})
@@ -26,11 +27,14 @@ export const notRequiredField = (field)=>{
 }
 
 //Validar que sea un id
-export const objectIdValid = (objectId)=>{
-    if(!isValidObjectId(objectId)) {
-        throw new Error(`Keeper is not a valid ObjectId`)
+export const objectIdValid = (req, res, next) => {
+    const { id } = req.params
+    if (!isValidObjectId(id)) {
+        return res.status(400).send({ error: 'The ID provided is not valid' })
     }
+    next()
 }
+
 
 export const findUser = async(id)=>{
     try{
@@ -42,3 +46,11 @@ export const findUser = async(id)=>{
         return false
     }
 }
+
+export const existCategoryName = async (name) => {
+    const category = await Category.findOne({ name })
+    if (category) {
+        throw new Error('Category name already exists')
+    }
+}
+
