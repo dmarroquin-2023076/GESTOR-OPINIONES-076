@@ -12,28 +12,28 @@ export const register = async(req, res)=>{
         await user.save()
         return res.send({message: `Registered successfully, can be login with username: ${user.username}`})
     }catch(err){
-        console.error(err)
+        console.e(err)
         return res.status(500).send({message: 'General error with user registration', err})
     }
 }
 
 export const login = async(req, res)=>{
     try{
-        //Capturar los datos(body)
+        
         let { userLoggin, password } = req.body
-        //Validar que el usuario exista
+      
         let user = await User.findOne(
             {
-                $or: [ //Subfunción OR | espera un [] de busquedas
+                $or: [ 
                     {email: userLoggin},
                     {username: userLoggin}
                 ]
             }
-        ) //{username} = {username: username}
+        ) 
         console.log(user)
-        //Verificar que la contraseña coincida
+        
         if(user && await checkPassword(user.password, password)){
-            //Generar el token
+          
             let loggedUser = {
                 uid: user._id,
                 username: user.username,
@@ -49,15 +49,15 @@ export const login = async(req, res)=>{
                 }
             )
         }
-        //Responder al usuario
+
         return res.status(400).send({message: 'Invalid credentials'})
     }catch(err){
-        console.error(err)
+        console.e(err)
         return res.status(500).send({message: 'General error with login function', err})
     }
 }
 
-//Actualizar datos generales
+
 export const update = async (req, res) => {
     try {
 
@@ -94,7 +94,7 @@ export const update = async (req, res) => {
                 }
         )
     } catch (err) {
-        console.error('General error', err)
+        console.e('General e', err)
         return res.status(500).send({
             success: false,
             message: 'General error',
@@ -105,15 +105,10 @@ export const update = async (req, res) => {
 
 export const updatePassword = async (req, res) => {
     try {
-        const loggedUser  = {
-            uid: req.user.uid,
-            username: req.user.username,
-            name: req.user.name,
-            role: req.user.role
-        }
+        const { uid } = req.user
+        const { currentPassword, newPassword } = req.body
 
-        const { newPassword } = req.body
-        const user = await User.findById(loggedUser .uid)
+        const user = await User.findById(uid)
         if (!user) {
             return res.status(404).send(
                 {
@@ -123,7 +118,16 @@ export const updatePassword = async (req, res) => {
             )
         }
 
-        
+        const isMatch = await checkPassword(user.password, currentPassword)
+        if (!isMatch) {
+            return res.status(400).send(
+                {
+                    success: false,
+                    message: 'Current password is incorrect'
+                }
+            )
+        }
+
         user.password = await encrypt(newPassword)
         const updatedUser  = await user.save()
 
@@ -131,16 +135,17 @@ export const updatePassword = async (req, res) => {
             {
                 success: true,
                 message: 'Password updated successfully',
-                user: updatedUser    
+                user: updatedUser  
             }
         )
     } catch (e) {
-        console.error(e)
+        console.e(e)
         return res.status(500).send(
             {
+                success: false,
                 message: 'General error with update password function',
                 e
-            }
+            }   
         )
     }
 }
@@ -148,14 +153,14 @@ export const updatePassword = async (req, res) => {
 
 const addDefaultUser = async () => {
     try {
-        // Verificar si ya existe un usuario administrador
+        
         const adminExisting = await User.findOne({ role: "ADMIN" })
  
         if (!adminExisting) {
-            // Encriptar contraseña
+           
             const passwordHash = await encrypt("Admin1234", 10)
  
-            // Crear usuario por defecto
+           
             const adminUser = new User(
                 {
                     name: "Retana",
@@ -172,7 +177,7 @@ const addDefaultUser = async () => {
             console.log("Default admin user added ")
         }
     } catch (e) {
-        console.error("Error adding default user:", e)
+        console.e("Error adding default user:", e)
     }
 }
 
