@@ -22,11 +22,7 @@ const publicationSchema = new Schema(
         user:{
             type:Schema.Types.ObjectId,
             ref:'User',
-        },
-        comments: [{ // Agregar un array de comentarios
-            type: Schema.Types.ObjectId,
-            ref: 'Comment'
-        }]
+        }
     },
     {
         versionKey: false, //Deshabilitar el __v(Versión del documento)
