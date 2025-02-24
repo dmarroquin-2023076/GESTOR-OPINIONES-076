@@ -5,13 +5,13 @@ import {
     update,
     updatePassword,
 } from "./user.controller.js"
-import { isAdmin, validateJwt } from "../../middlewares/validate.jwt.js"
-import { updateUserValidator } from "../../middlewares/validators.js"
+import { validateJwt } from "../../middlewares/validate.jwt.js"
+import { registerValidator, updatePasswordValidator, updateUserValidator } from "../../middlewares/validators.js"
 
 
 const api = Router()
 
-api.post('/register', register)
+api.post('/register',registerValidator, register)
 
 api.post('/',login)
 
@@ -29,7 +29,7 @@ api.put(
     '/updatePassword',
     [
         validateJwt, 
-        updateUserValidator
+        updatePasswordValidator
     ], 
     updatePassword
 )
